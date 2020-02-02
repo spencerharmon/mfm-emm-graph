@@ -1,6 +1,7 @@
 from .atoms import Identifier, Empty
 from .exceptions import MembraneNotFound
 from pprint import pprint
+from graph_tools import *
 
 class Cell(object):
     def __init__(self, grid, identifier: Identifier, idx, idy):
@@ -12,8 +13,14 @@ class Cell(object):
         self.cell_grid = self.grid.gen_2d_grid_list(Empty())
         self.is_cell_slot_grid = self.grid.gen_2d_grid_list(False)
         self.flood_fill(self.idx, self.idy)
-        self.allowed_x_steps = self.grid.grid_data.grid_width
-        self.allowed_y_steps = self.grid.grid_data.grid_height
+
+        self.graph = Graph()
+        self.vprop_genes = self.graph.new_vertex_property("object")
+        for atom in self.atoms_in_cell:
+            if "treeid" in atom.data_members.keys():
+                self.vprop_genes[int(self.graph.add_vertex())] = atom
+        
+        
 
     def flood_fill(self, x, y):
         """
@@ -36,9 +43,7 @@ class Cell(object):
 
             #8-way tail recursion
             for d_x, d_y in [(x + lx, y + ly) for lx in range(-1, 2) for ly in range(-1, 2)]:
-                print('recurse ' + str(d_x) + ',' + str(d_y))
                 self.flood_fill(d_x, d_y)
-
 
         
     def print_cell_grid(self):
