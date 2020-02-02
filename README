@@ -1,0 +1,3 @@
+depends on graph-tool https://graph-tool.skewed.de/
+dependency not in cheese shop.
+Install according to https://git.skewed.de/count0/graph-tool/-/wikis/Installation-instructions
