@@ -32,6 +32,7 @@ class Cell(object):
             graphs.append(g)
             g.graph_properties.treeID = g.new_graph_property("string")
             g.vertex_properties.genes = g.new_vertex_property("object")
+            g.vertex_properties.label = g.new_vertex_property("string")
 
             # set the treeID in the graph properties.
             if root.name == "Root":
@@ -50,7 +51,7 @@ class Cell(object):
             # add the root gene to the graph.
             root_vertex = g.add_vertex()
             g.vertex_properties.genes[int(root_vertex)] = root
-
+            g.vp.label[int(root_vertex)] = root.name
 
         for g in graphs:
             # put the rest of the tree genes in each graph
@@ -63,6 +64,7 @@ class Cell(object):
                                           "VarRef"}):
                         v = g.add_vertex()
                         g.vp.genes[int(v)] = atom
+                        g.vp.label[int(v)] = 'geneID: ' + atom.data_members["geneID"]  + '; Type: ' + atom.name
                 except KeyError:
                     continue
             # create edges now that all of the genes are in the graph

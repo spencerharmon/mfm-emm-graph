@@ -2,7 +2,15 @@ depends on graph-tool https://graph-tool.skewed.de/
 dependency not in cheese shop.
 Install according to https://git.skewed.de/count0/graph-tool/-/wikis/Installation-instructions
 
-e.g. for ubuntu disco:
+e.g. for arch:
+install from aur https://aur.archlinux.org/packages/python-graph-tool/
+yay -S python-graph-tool
+for some reason this misses matplotlib, so you also need to
+pip install matplotlib
+
+for ubuntu disco:
 sudo add-apt-repository -s -u "http://downloads.skewed.de/apt/disco universe"
 sudo apt-get install python3-graph-tool
 
+also install mfm-griddata-parser python module:
+sudo pip install git+https://www.github.com/spencerharmon/mfm-griddata-parser.git
