@@ -10,7 +10,7 @@ class Grid(object):
     def __init__(self, mfm_grid_state_file):
         self.grid_data = GridData()
         self.grid_data.load_file(mfm_grid_state_file)
-        self.atom_data = self.grid_data.get_grid_state()["non_empty_site_list"]
+        self.atom_data = self.flip_xy(self.grid_data.get_grid_state()["non_empty_site_list"])
         self.atom_index = self.index_atoms()
         self.cells = [Cell(self, _id, idx, idy) for _id, idx, idy in self.find_identifiers()]
 
@@ -25,8 +25,8 @@ class Grid(object):
         to the object given by init
         """
         return [[init
-                 for x in range(0, self.grid_data.grid_height)]
-                for y in range(0, self.grid_data.grid_width)]
+                 for x in range(0, self.grid_data.grid_width)]
+                for y in range(0, self.grid_data.grid_height)]
 
     def index_atoms(self):
         """
@@ -46,6 +46,13 @@ class Grid(object):
             two_d_list[a_d["x"]][a_d["y"]] = self.atom_factory(a_d)
         return two_d_list
 
+    def flip_xy(self, atom_data):
+        for ad in atom_data:
+            tmp_x = ad["y"]
+            tmp_y = ad["x"]
+            ad.update({"x": tmp_x, "y": tmp_y})
+        return atom_data
+    
     def atom_factory(self, atom_dict):
         """
         return a special atom class type (should be used only for type hinting) or a generic atom
