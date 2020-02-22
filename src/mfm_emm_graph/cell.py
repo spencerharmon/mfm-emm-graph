@@ -38,6 +38,7 @@ class Cell(object):
             g.graph_properties.inline_svg = g.new_graph_property("string")
             g.vertex_properties.genes = g.new_vertex_property("object")
             g.vertex_properties.label = g.new_vertex_property("string")
+            g.vertex_properties.fill_color = g.new_vertex_property("string")
 
             # set the treeID in the graph properties.
             if root.name == "Root":
@@ -56,7 +57,8 @@ class Cell(object):
             # add the root gene to the graph.
             root_vertex = g.add_vertex()
             g.vertex_properties.genes[int(root_vertex)] = root
-            g.vp.label[int(root_vertex)] = 'root'
+            g.vp.label[int(root_vertex)] = 'root: ' + root.name
+            g.vp.fill_color[int(root_vertex)] = "xkcd:vomit green"
 
         for g in graphs:
             # put the rest of the tree genes in each graph
@@ -69,7 +71,8 @@ class Cell(object):
                                           "VarRef"}):
                         v = g.add_vertex()
                         g.vp.genes[int(v)] = atom
-                        g.vp.label[int(v)] = atom.data_members["geneID"]
+                        g.vp.label[int(v)] = atom.data_members["geneID"] + ": " + atom.name
+                        g.vp.fill_color[int(v)] = "xkcd:ugly purple"
                 except KeyError:
                     continue
             # create edges now that all of the genes are in the graph
@@ -105,12 +108,11 @@ class Cell(object):
                 g,
                 output=svg,
                 fmt='svg',
-                output_size=(400,400),
-#                nodesfirst=True,
-#                fit_view=0.5,
-                vprops={'text': g.vertex_properties.label})
-#                        'font_size': 12,
-#                        'size': 1,
+                output_size=(800,600),
+                vprops={'text': g.vertex_properties.label,
+                        'fill_color': g.vertex_properties.fill_color,
+                        'font_size': 8})
+#                        'size': 1})
 #                        'pen_width': 1},
 #                eprops={'pen_width': 0.8})
             svg.seek(0)
