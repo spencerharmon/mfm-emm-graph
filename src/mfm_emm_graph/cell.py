@@ -2,6 +2,10 @@ from .atoms import Identifier, Empty
 from .exceptions import MembraneNotFound
 from pprint import pprint
 from graph_tool.all import *
+from io import FileIO, StringIO,BytesIO, TextIOWrapper
+from tempfile import NamedTemporaryFile
+from graph_tool.draw import graph_draw
+import html
 
 class Cell(object):
     def __init__(self, grid, identifier: Identifier, idx, idy):
@@ -28,9 +32,10 @@ class Cell(object):
 
         for root in root_genes:
             # Make a graph for each tree.
-            g = Graph()
+            g = Graph(directed=False)
             graphs.append(g)
             g.graph_properties.treeID = g.new_graph_property("string")
+            g.graph_properties.inline_svg = g.new_graph_property("string")
             g.vertex_properties.genes = g.new_vertex_property("object")
             g.vertex_properties.label = g.new_vertex_property("string")
 
@@ -51,7 +56,7 @@ class Cell(object):
             # add the root gene to the graph.
             root_vertex = g.add_vertex()
             g.vertex_properties.genes[int(root_vertex)] = root
-            g.vp.label[int(root_vertex)] = root.name
+            g.vp.label[int(root_vertex)] = 'root'
 
         for g in graphs:
             # put the rest of the tree genes in each graph
@@ -64,7 +69,7 @@ class Cell(object):
                                           "VarRef"}):
                         v = g.add_vertex()
                         g.vp.genes[int(v)] = atom
-                        g.vp.label[int(v)] = 'geneID: ' + atom.data_members["geneID"]  + '; Type: ' + atom.name
+                        g.vp.label[int(v)] = atom.data_members["geneID"]
                 except KeyError:
                     continue
             # create edges now that all of the genes are in the graph
@@ -93,7 +98,25 @@ class Cell(object):
                                 continue
                             else:
                                 raise
-    
+            #store the svg as a string on the graph
+            svg = BytesIO()
+
+            graph_draw(
+                g,
+                output=svg,
+                fmt='svg',
+                output_size=(400,400),
+#                nodesfirst=True,
+#                fit_view=0.5,
+                vprops={'text': g.vertex_properties.label})
+#                        'font_size': 12,
+#                        'size': 1,
+#                        'pen_width': 1},
+#                eprops={'pen_width': 0.8})
+            svg.seek(0)
+            g.gp.inline_svg = svg.getvalue()
+            svg.close()
+        
         return graphs
             
             
@@ -125,6 +148,4 @@ class Cell(object):
     def print_cell_grid(self):
         for list in self.cell_grid:
             print(*list, sep='')
-
-
 
