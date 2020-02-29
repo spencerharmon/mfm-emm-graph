@@ -35,7 +35,7 @@ class Cell(object):
             # Make a graph for each tree.
             g = Graph(directed=False)
             graphs.append(g)
-            g.graph_properties.treeID = g.new_graph_property("string")
+            g.graph_properties.treeID = g.new_graph_property("int")
             g.graph_properties.inline_svg = g.new_graph_property("string")
             g.vertex_properties.genes = g.new_vertex_property("object")
             g.vertex_properties.label = g.new_vertex_property("string")
@@ -45,13 +45,11 @@ class Cell(object):
             if root.name == "Root":
                 treeID = root.data_members["treeID"]
             elif root.name == "ComOut":
-                # grumble. mfm-griddata-parser still isn't type-aware, so these are still strings.
-                # TODO: make these ints when parser is fixed.
-                treeID = '3'
+                treeID = 3
             elif root.name == "Direction":
-                treeID = '1'
+                treeID = 1
             elif root.name == "Movement":
-                treeID = '2'
+                treeID = 2
 
             g.graph_properties.treeID = treeID
 
@@ -72,7 +70,7 @@ class Cell(object):
                                           "VarRef"}):
                         v = g.add_vertex()
                         g.vp.genes[int(v)] = atom
-                        g.vp.label[int(v)] = atom.data_members["geneID"] + ": " + atom.name
+                        g.vp.label[int(v)] = str(atom.data_members["geneID"]) + ": " + atom.name
                         g.vp.fill_color[int(v)] = "xkcd:ugly purple"
                 except KeyError:
                     continue
