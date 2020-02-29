@@ -1,4 +1,5 @@
-from .atoms import Identifier, Empty
+from .atoms import Identifier
+from mfm_griddata_parser.atoms import Empty
 from .exceptions import MembraneNotFound
 from pprint import pprint
 from graph_tool.all import *
@@ -108,7 +109,7 @@ class Cell(object):
                 g,
                 output=svg,
                 fmt='svg',
-                output_size=(800,600),
+                output_size=(600,400),
                 vprops={'text': g.vertex_properties.label,
                         'fill_color': g.vertex_properties.fill_color,
                         'font_size': 8})
