@@ -15,5 +15,5 @@ class Grid(GridData):
 
     def find_identifiers(self):
         return [(Identifier(atom), atom["x"], atom["y"])
-                for atom in self.atom_data
+                for atom in self.event_layer_atom_data
                 if atom["name"] == "Identifier"]

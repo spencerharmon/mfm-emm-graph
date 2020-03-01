@@ -131,7 +131,7 @@ class Cell(object):
         #first check if we already found this one:
         if self.is_cell_slot_grid[x][y]:
             return
-        atom = self.grid.atom_index[x][y]
+        atom = self.grid.event_layer_index[x][y]
 
         # if it's an OuterMembrane, it's not in the cell, otherwise it is.
         if atom.name == "OuterMembrane":
